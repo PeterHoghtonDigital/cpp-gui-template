@@ -1,0 +1,55 @@
+# ================================
+# Clang-Tidy C++ Static Analysis
+# ================================
+# This .clang-tidy file defines the static analysis rules for C++ code in this project.
+# It enables broad modern C++ best-practice checks while disabling rules that conflict
+# with common development patterns or project coding conventions.
+
+# Checks:
+
+# C++ Core Guidelines
+# Modern C++
+# Potential bug detection
+# Performance improvements
+# Code readability
+# Miscellaneous additional checks
+# Header guard naming conventions
+# Allows C-style variadic functions
+# Allows C-style arrays (Core Guidelines)
+# Allows array-to-pointer decay
+# Allows pointer arithmetic
+# Allows reinterpret_cast usage
+# Keeps traditional return type syntax
+# Allows C-style arrays (Modernize)
+# Keeps explicit variable types
+# Allows lowercase literal suffixes
+# Allows short identifiers where appropriate
+# Allows intentional implicit bool conversions
+# Allows public struct/data members
+
+Checks: >
+  cppcoreguidelines-*,                                    
+  modernize-*,                                            
+  bugprone-*,                                             
+  performance-*,                                          
+  readability-*,                                          
+  misc-*,                                                 
+  llvm-header-guard,                                      
+  -cppcoreguidelines-pro-type-vararg,                     
+  -cppcoreguidelines-avoid-c-arrays,                      
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,   
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,      
+  -cppcoreguidelines-pro-type-reinterpret-cast,           
+  -modernize-use-trailing-return-type,                    
+  -modernize-avoid-c-arrays,                              
+  -modernize-use-auto,                                    
+  -readability-uppercase-literal-suffix,                  
+  -readability-identifier-length,                         
+  -readability-implicit-bool-conversion,                  
+  -misc-non-private-member-variables-in-classes           
+
+WarningsAsErrors: ''                                      # Does not treat warnings as build errors
+
+HeaderFilterRegex: '.*'                                   # Applies checks to all Source headers (Third Party / System headers will be ignored)
+
+FormatStyle: file                                         # Uses .clang-format for formatting rules
