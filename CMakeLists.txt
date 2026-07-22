@@ -73,7 +73,7 @@ FetchContent_MakeAvailable(imgui)
 find_package(OpenGL REQUIRED)
 
 # Add Source files
-file(GLOB SRC CONFIGURE_DEPENDS "Source/*.cpp")
+file(GLOB_RECURSE SRC CONFIGURE_DEPENDS "Source/*.cpp")
 set(IMGUI_SRC 
     "${imgui_SOURCE_DIR}/imgui.cpp"
     "${imgui_SOURCE_DIR}/imgui_draw.cpp"
