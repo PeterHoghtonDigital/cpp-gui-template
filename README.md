@@ -1,8 +1,10 @@
 # C++ GUI Template
 
-This project provides a lightweight modern **C++ GUI template** for quickly setting up a cross-platform development environment with a graphical user interface.
+This project provides a lightweight modern **C++ GUI template** for quickly setting up a cross-platform development environment with a graphical user interface - powered by OpenGL.
 It uses only free and open-source software, tools and libraries under permissive licenses, including **VSCodium**, **Clang**, **CMake**, **Ninja**, **GLFW**, **GLAD**, **ImGui** and **Git**.
 It is designed as a ready-to-use starting point for developing or experimenting with modern C++ and OpenGL on **Windows**, **macOS**, and **Linux**.
+
+The OpenGL implementation is intentionally kept simple - it is designed to be easy to understand, modify, and replace - not to provide a complete rendering framework or prescribe an architecture. It is suitable for developers who simply want a working OpenGL + ImGui setup without having to configure everything themselves, as well as those who intend to build their own rendering framework on top of it.
 
 ## Features
 
@@ -11,6 +13,7 @@ It is designed as a ready-to-use starting point for developing or experimenting 
 - Cross-platform support (Windows, macOS, Linux).
 - Preconfigured C++20 project using CMake and Ninja.
 - Preconfigured OpenGL/GUI support via GLFW, GLAD and ImGui.
+- GLSL shader support.
 - Integrated Clang compiler and clangd language server support.
 - Automated code formatting with clang-format.
 - Static analysis with clang-tidy.
@@ -141,7 +144,7 @@ Use the terminal command: `git config --global user.email youremail@example.com`
 5) Select *'Open'* to open the folder as the current workspace.
 6) Wait for CMake to automatically fetch and download the required third-party libraries.
 7) The first time you open a C++ file it will prompt you to install the latest clangd language server, select **'Install'**.
-8) The project contains some very simple OpenGL mesh and ImGui window examples for testing. These can be found in `Source/examples.h`.
+8) The project contains some very simple OpenGL mesh, shader and ImGui window examples for testing. These can be found in `Source/examples.h` and `Data/Shaders/`.
 
 ### Project Structure
 
@@ -154,6 +157,9 @@ Use the terminal command: `git config --global user.email youremail@example.com`
 └─ tasks.json
 Build/
 Data/
+└─ Shaders/
+   ├─ example.vert
+   └─ example.frag
 External/
 └─ glad/
 Source/
@@ -171,8 +177,9 @@ README.md
 
 The project is structured so that all necessary source files are automatically included in the build, while generated and other irrelevant files are excluded from Git.
 
-- **Build** - Generated binaries and intermediate build files.
+- **Build** - Generated binaries, copied shaders and intermediate build files.
 - **Data** - Place local data and large binary assets here.
+- **Data/Shaders** - Place your GLSL shaders here.
 - **External** - Place third-party libraries here.
 - **Source** - Place your C++ source and header files here.
 

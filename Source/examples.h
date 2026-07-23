@@ -1,7 +1,9 @@
 #pragma once
 
+#include <fstream>
 #include <glad/gl.h>
 #include <imgui.h>
+#include <sstream>
 
 // Simple red triangle mesh for testing OpenGL
 struct ExampleMesh
@@ -13,19 +15,19 @@ struct ExampleMesh
 	// Initialize shaders and geometry
 	void Init()
 	{
-		// Vertex Shader Source
-		const char* vs = "#version 410 core\n"
-						 "layout(location=0) in vec3 p;\n"
-						 "void main(){\n"
-						 "  gl_Position=vec4(p,1.0);\n"
-						 "}";
+		// Load Vertex Shader Source
+		std::ifstream vsFile("Data/Shaders/example.vert");
+		std::stringstream vsStream;
+		vsStream << vsFile.rdbuf();
+		std::string vsString = vsStream.str();
+		const char* vs = vsString.c_str();
 
-		// Fragment Shader Source
-		const char* fs = "#version 410 core\n"
-						 "out vec4 f;\n"
-						 "void main(){\n"
-						 "  f=vec4(1.0, 0.0, 0.0, 1.0);\n"
-						 "}";
+		// Load Fragment Shader Source
+		std::ifstream fsFile("Data/Shaders/example.frag");
+		std::stringstream fsStream;
+		fsStream << fsFile.rdbuf();
+		std::string fsString = fsStream.str();
+		const char* fs = fsString.c_str();
 
 		// Create and compile shaders
 		unsigned int v = glCreateShader(GL_VERTEX_SHADER);

@@ -16,4 +16,5 @@ External/*
 
 # Local data and large binary assets
 Data/*
-!Data/.gitkeep
+!Data/Shaders
+!Data/Shaders/**

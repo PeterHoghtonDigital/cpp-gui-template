@@ -3,8 +3,8 @@
 # ================================
 # This CMakeLists.txt defines the build configuration for the C++ project.
 # It configures C++20 support, exports compile commands for clangd, automatically
-# includes source files, fetches third-party libraries, and defines platform and 
-# build configuration macros.
+# includes source files, copies shaders, fetches third-party libraries, 
+# and defines platform and build configuration macros.
 
 cmake_minimum_required(VERSION 3.25)
 
@@ -111,6 +111,22 @@ if(APPLE)
     find_library(COREVIDEO CoreVideo)
     target_link_libraries(cpp-gui-template ${COCOA} ${IOKIT} ${COREVIDEO})
 endif()
+
+# Add GLSL Shader Files
+file(GLOB_RECURSE SHADER_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/Data/Shaders/*.vert"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Data/Shaders/*.frag"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Data/Shaders/*.comp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Data/Shaders/*.tesc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Data/Shaders/*.tese"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Data/Shaders/*.geom"
+)
+
+# Copy GLSL Shaders to Build directory
+foreach(SHADER_SOURCE IN LISTS SHADER_SOURCES)
+    file(RELATIVE_PATH SHADER_RELATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Data/Shaders" "${SHADER_SOURCE}")
+    configure_file("${SHADER_SOURCE}" "${CMAKE_CURRENT_BINARY_DIR}/Data/Shaders/${SHADER_RELATIVE_PATH}" COPYONLY)
+endforeach()
 
 # Define Platform Macros
 if(WIN32)
