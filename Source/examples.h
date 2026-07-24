@@ -4,88 +4,87 @@
 #include <glad/gl.h>
 #include <imgui.h>
 #include <sstream>
+#include <string>
 
-// Simple red triangle mesh for testing OpenGL
-struct ExampleMesh
+namespace Examples
 {
-	unsigned int program = 0;
-	unsigned int vao = 0;
-	unsigned int vbo = 0;
-
-	// Initialize shaders and geometry
-	void Init()
+	// Simple triangle mesh for testing OpenGL
+	struct TriangleMesh
 	{
-		// Load Vertex Shader Source
-		std::ifstream vsFile("Data/Shaders/example.vert");
-		std::stringstream vsStream;
-		vsStream << vsFile.rdbuf();
-		std::string vsString = vsStream.str();
-		const char* vs = vsString.c_str();
+		// Geometry
+		static constexpr float VERTICES[9] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f};
 
-		// Load Fragment Shader Source
-		std::ifstream fsFile("Data/Shaders/example.frag");
-		std::stringstream fsStream;
-		fsStream << fsFile.rdbuf();
-		std::string fsString = fsStream.str();
-		const char* fs = fsString.c_str();
+		GLuint Program = 0;
+		GLuint VAO = 0;
+		GLuint VBO = 0;
 
-		// Create and compile shaders
-		unsigned int v = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(v, 1, &vs, nullptr);
-		glCompileShader(v);
+		// Initialize shaders and geometry
+		TriangleMesh(const char* VertexShaderPath, const char* FragmentShaderPath) : Program(glCreateProgram())
+		{
+			// Load Vertex Shader
+			std::ifstream VertexShaderFStream(VertexShaderPath);
+			std::stringstream VertexShaderSStream;
+			VertexShaderSStream << VertexShaderFStream.rdbuf();
+			std::string VertexShaderString = VertexShaderSStream.str();
+			const char* VertexShaderSource = VertexShaderString.c_str();
 
-		unsigned int f = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(f, 1, &fs, nullptr);
-		glCompileShader(f);
+			// Load Fragment Shader
+			std::ifstream FragmentShaderFStream(FragmentShaderPath);
+			std::stringstream FragmentShaderSStream;
+			FragmentShaderSStream << FragmentShaderFStream.rdbuf();
+			std::string FragmentShaderString = FragmentShaderSStream.str();
+			const char* FragmentShaderSource = FragmentShaderString.c_str();
 
-		// Link shaders
-		program = glCreateProgram();
-		glAttachShader(program, v);
-		glAttachShader(program, f);
-		glLinkProgram(program);
-		glDeleteShader(v);
-		glDeleteShader(f);
+			// Create and compile shaders
+			GLuint VertexShader = glCreateShader(GL_VERTEX_SHADER);
+			glShaderSource(VertexShader, 1, &VertexShaderSource, nullptr);
+			glCompileShader(VertexShader);
 
-		// Geometry Data
-		float vertices[] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f};
+			GLuint FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+			glShaderSource(FragmentShader, 1, &FragmentShaderSource, nullptr);
+			glCompileShader(FragmentShader);
 
-		// Create geometry
-		glGenVertexArrays(1, &vao);
-		glGenBuffers(1, &vbo);
-		glBindVertexArray(vao);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-		glEnableVertexAttribArray(0);
-	}
+			// Link shaders
+			glAttachShader(Program, VertexShader);
+			glAttachShader(Program, FragmentShader);
+			glLinkProgram(Program);
+			glDeleteShader(VertexShader);
+			glDeleteShader(FragmentShader);
 
-	// Render shaders and geometry
-	void Render() const
+			// Create geometry
+			glGenVertexArrays(1, &VAO);
+			glGenBuffers(1, &VBO);
+			glBindVertexArray(VAO);
+			glBindBuffer(GL_ARRAY_BUFFER, VBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(VERTICES), VERTICES, GL_STATIC_DRAW);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+			glEnableVertexAttribArray(0);
+		}
+
+		// Render shaders and geometry
+		void Render() const
+		{
+			glUseProgram(Program);
+			glBindVertexArray(VAO);
+			glDrawArrays(GL_TRIANGLES, 0, 3);
+		}
+
+		// Destroy shaders and geometry
+		void Destroy()
+		{
+			glDeleteVertexArrays(1, &VAO);
+			glDeleteBuffers(1, &VBO);
+			glDeleteProgram(Program);
+		}
+	};
+
+	// Simple window for testing ImGui
+	inline void CreateImGuiWindow(const char* Title, const char* Text, float PosX, float PosY, float SizeX, float SizeY)
 	{
-		glUseProgram(program);
-		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-	}
-
-	// Destroy shaders and geometry
-	void Destroy()
-	{
-		glDeleteVertexArrays(1, &vao);
-		glDeleteBuffers(1, &vbo);
-		glDeleteProgram(program);
-	}
-};
-
-// Simple dockable window for testing ImGui
-struct ExampleWindow
-{
-	// Creates a window with given title, text, position and size
-	static void Create(const char* title, const char* text, float posX, float posY, float sizeX, float sizeY)
-	{
-		ImGui::SetNextWindowPos(ImVec2(posX, posY), ImGuiCond_FirstUseEver);
-		ImGui::SetNextWindowSize(ImVec2(sizeX, sizeY), ImGuiCond_FirstUseEver);
-		ImGui::Begin(title);
-		ImGui::TextWrapped(text);
+		ImGui::SetNextWindowPos(ImVec2(PosX, PosY), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(SizeX, SizeY), ImGuiCond_FirstUseEver);
+		ImGui::Begin(Title);
+		ImGui::TextWrapped("%s", Text);
 		ImGui::End();
 	}
-};
+}
