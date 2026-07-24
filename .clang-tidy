@@ -26,6 +26,7 @@
 # Allows short identifiers where appropriate
 # Allows intentional implicit bool conversions
 # Allows public struct/data members
+# Naming conventions
 
 Checks: >
   cppcoreguidelines-*,                                    
@@ -48,8 +49,27 @@ Checks: >
   -readability-implicit-bool-conversion,                  
   -misc-non-private-member-variables-in-classes           
 
-WarningsAsErrors: ''                                      # Does not treat warnings as build errors
+CheckOptions:
+  - { key: readability-identifier-naming.MacroDefinitionCase,       value: UPPER_CASE }
+  - { key: readability-identifier-naming.TemplateParameterCase,     value: CamelCase }
+  - { key: readability-identifier-naming.NamespaceCase,             value: CamelCase }
+  - { key: readability-identifier-naming.ClassCase,                 value: CamelCase }
+  - { key: readability-identifier-naming.StructCase,                value: CamelCase }
+  - { key: readability-identifier-naming.UnionCase,                 value: CamelCase }
+  - { key: readability-identifier-naming.EnumCase,                  value: CamelCase }
+  - { key: readability-identifier-naming.EnumConstantCase,          value: CamelCase }
+  - { key: readability-identifier-naming.FunctionCase,              value: CamelCase }
+  - { key: readability-identifier-naming.MethodCase,                value: CamelCase }
+  - { key: readability-identifier-naming.VariableCase,              value: CamelCase }
+  - { key: readability-identifier-naming.GlobalVariableCase,        value: CamelCase }
+  - { key: readability-identifier-naming.StaticVariableCase,        value: CamelCase }
+  - { key: readability-identifier-naming.MemberCase,                value: CamelCase }
+  - { key: readability-identifier-naming.ParameterCase,             value: CamelCase }
+  - { key: readability-identifier-naming.LocalVariableCase,         value: CamelCase }
+  - { key: readability-identifier-naming.ConstexprVariableCase,     value: UPPER_CASE }
+  - { key: readability-identifier-naming.GlobalConstantCase,        value: CamelCase }
+  - { key: readability-identifier-naming.StaticConstantCase,        value: CamelCase }
+  - { key: readability-identifier-naming.MemberConstantCase,        value: CamelCase }
 
-HeaderFilterRegex: '.*'                                   # Applies checks to all Source headers (Third Party / System headers will be ignored)
-
-FormatStyle: file                                         # Uses .clang-format for formatting rules
+WarningsAsErrors: ''  # Does not treat warnings as build errors
+FormatStyle: file     # Uses .clang-format for formatting rules

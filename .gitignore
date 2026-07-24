@@ -11,6 +11,8 @@ Build/*
 
 # Third party libraries
 External/*
+!External/.clang-format
+!External/.clang-tidy
 !External/glad/
 !External/glad/**
 
