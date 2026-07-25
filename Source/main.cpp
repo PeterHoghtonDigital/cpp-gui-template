@@ -38,8 +38,12 @@ int main()
 	const int WindowHeight = 720;
 	const char* WindowTitle = "Hello, World!";
 
+	// Scale appropriately for 4K, Retina, and High-DPI displays
+	float WindowScale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor());
+
 	// Create the application window
-	GLFWwindow* Window = glfwCreateWindow(WindowWidth, WindowHeight, WindowTitle, nullptr, nullptr);
+	GLFWwindow* Window = glfwCreateWindow(static_cast<int>(WindowWidth * WindowScale),
+		static_cast<int>(WindowHeight * WindowScale), WindowTitle, nullptr, nullptr);
 	if (!Window)
 	{
 		glfwTerminate();
@@ -67,6 +71,16 @@ int main()
 		| ImGuiConfigFlags_ViewportsEnable; // Enables moving UI windows outside the main application window
 	IO.IniFilename = "imgui.ini"; // File used to save UI state, path is relative to build directory
 	ImGui::StyleColorsDark(); // Enable dark mode
+	ImGuiStyle& Style = ImGui::GetStyle();
+	Style.ScaleAllSizes(WindowScale);
+	Style.FontScaleDpi = WindowScale;
+	IO.ConfigDpiScaleFonts = true;
+	IO.ConfigDpiScaleViewports = true;
+	if (IO.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		Style.WindowRounding = 0.0f;
+		Style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+	}
 	ImGui_ImplGlfw_InitForOpenGL(Window, true);
 	ImGui_ImplOpenGL3_Init("#version 410 core"); // Must match the OpenGL version in Initialize GLFW section
 
@@ -86,7 +100,8 @@ int main()
 		ImGui::NewFrame();
 		ImGuiWindowFlags Flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse
 								 | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
-								 | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+								 | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus
+								 | ImGuiWindowFlags_NoBackground;
 		const ImGuiViewport* Viewport = ImGui::GetMainViewport();
 		ImGui::SetNextWindowPos(Viewport->Pos);
 		ImGui::SetNextWindowSize(Viewport->Size);
@@ -100,11 +115,10 @@ int main()
 		ImGui::End();
 
 		// --- Create your ImGui windows here ---
-		Examples::CreateImGuiWindow(
-			"A Window!", "Hello from a window!", Viewport->Pos.x + 220, Viewport->Pos.y + 160, 400, 400);
+		ImGui::ShowDemoWindow();
 
 		Examples::CreateImGuiWindow(
-			"Another Window!", "Hello from another window!", Viewport->Pos.x + 660, Viewport->Pos.y + 160, 400, 400);
+			"A Window!", "Hello from a window!", Viewport->Pos.x + 220, Viewport->Pos.y + 160, 400, 400);
 		// --------------------------------------
 
 		// Render the frame
