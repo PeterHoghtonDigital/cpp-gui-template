@@ -81,8 +81,23 @@ int main()
 		Style.WindowRounding = 0.0f;
 		Style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
-	ImGui_ImplGlfw_InitForOpenGL(Window, true);
-	ImGui_ImplOpenGL3_Init("#version 410 core"); // Must match the OpenGL version in Initialize GLFW section
+	if (!ImGui_ImplGlfw_InitForOpenGL(Window, true))
+	{
+		ImGui::DestroyContext();
+		glfwDestroyWindow(Window);
+		glfwTerminate();
+		std::cerr << "Failed to initialize the ImGui GLFW backend..." << '\n';
+		return -1;
+	}
+	if (!ImGui_ImplOpenGL3_Init("#version 410 core")) // Must match the OpenGL version in Initialize GLFW section
+	{
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+		glfwDestroyWindow(Window);
+		glfwTerminate();
+		std::cerr << "Failed to initialize the ImGui OpenGL backend..." << '\n';
+		return -1;
+	}
 
 	// --- Create your shaders and geometry here ---
 	Examples::TriangleMesh Mesh("Data/Shaders/example.vert", "Data/Shaders/example.frag");
