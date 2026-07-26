@@ -115,7 +115,8 @@ int main()
 		ImGui::End();
 
 		// --- Create your ImGui windows here ---
-		ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow(); // Demo window containing common ImGui features, view the code to see how to
+								 // implement various UI elements and functionality in your own windows!
 
 		Examples::CreateImGuiWindow(
 			"A Window!", "Hello from a window!", Viewport->Pos.x + 220, Viewport->Pos.y + 160, 400, 400);
@@ -123,19 +124,32 @@ int main()
 
 		// Render the frame
 		ImGui::Render();
+
+		// Check if main window is minimized
 		int ViewportWidth = 0;
 		int ViewportHeight = 0;
 		glfwGetFramebufferSize(Window, &ViewportWidth, &ViewportHeight);
-		glViewport(0, 0, ViewportWidth, ViewportHeight);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Background colour
-		glClear(GL_COLOR_BUFFER_BIT);
+		const ImDrawData* DrawData = ImGui::GetDrawData();
+		const bool ShouldRenderMainWindow = (glfwGetWindowAttrib(Window, GLFW_ICONIFIED) == 0) && ViewportWidth > 0
+											&& ViewportHeight > 0 && DrawData->DisplaySize.x > 0.0f
+											&& DrawData->DisplaySize.y > 0.0f;
 
-		// --- Render your shaders and geometry here ---
-		Mesh.Render();
-		// ---------------------------------------------
+		if (ShouldRenderMainWindow)
+		{
+			glViewport(0, 0, ViewportWidth, ViewportHeight);
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Background colour
+			glClear(GL_COLOR_BUFFER_BIT);
 
-		// Renders the UI windows inside the main application window
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			// --- Render your shaders and geometry here ---
+			Mesh.Render();
+			// ---------------------------------------------
+
+			// Renders the UI windows inside the main application window
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+			glfwSwapBuffers(Window);
+		}
+
 		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			// Renders any UI windows outside the main application window
@@ -144,7 +158,6 @@ int main()
 			ImGui::RenderPlatformWindowsDefault();
 			glfwMakeContextCurrent(ActiveWindow);
 		}
-		glfwSwapBuffers(Window);
 	}
 
 	// --- Destroy your shaders and geometry here ---
