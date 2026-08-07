@@ -17,16 +17,16 @@ Before submitting a bug report:
 
 ## Environment
 
-- OS *(Windows/macOS/Linux)*:
+- OS: *(Windows/macOS/Linux)*
 - Kernel version:
-- Windowing System (Linux Only): *(X11/Wayland)*
+- Windowing System *(Linux Only)*: *(X11/Wayland)*
 - GPU + Graphics Driver version: *(Nvidia/AMD/Intel) + version*
 - OpenGL version: *(default: 410 core)*
 - VSCodium version:
 - Clang version:
 - CMake version:
 - Ninja version:
-- Build configuration *(Debug/Release/RelWithDebInfo)*:
+- Build configuration: *(Debug/Release/RelWithDebInfo)*
 
 ## Description
 
