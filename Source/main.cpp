@@ -55,6 +55,8 @@ int main()
 	// Initialize GLAD
 	if (!gladLoadGL(glfwGetProcAddress))
 	{
+		glfwDestroyWindow(Window);
+		glfwTerminate();
 		std::cerr << "Failed to initialize GLAD..." << '\n';
 		return -1;
 	}
